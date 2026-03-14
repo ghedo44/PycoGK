@@ -27,10 +27,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/leap71/PicoGK"
-Documentation = "https://github.com/leap71/PicoGK"
-Repository = "https://github.com/leap71/PicoGK"
-Issues = "https://github.com/leap71/PicoGK/issues"
+Homepage = "https://github.com/ghedo44/PycoGK"
+Documentation = "https://github.com/ghedo44/PycoGK"
+Repository = "https://github.com/ghedo44/PycoGK"
+Issues = "https://github.com/ghedo44/PycoGK/issues"
 
 [project.optional-dependencies]
 dev = [
