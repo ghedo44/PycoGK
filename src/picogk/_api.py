@@ -2353,7 +2353,20 @@ class VedoViewer:
         self._stop_loop()
         self._drain_queue()
         self._ensure_key_callback()
-        self._plotter.show(interactive=True, resetcam=False)
+        # Phase 1: open the VTK window non-interactively so the render window
+        # and camera object actually exist.  resetcam=True lets vedo fit the
+        # scene so the object is always visible before we reposition.
+        self._plotter.show(interactive=False, resetcam=True)
+        # Phase 2: now that the window is live, apply our computed camera
+        # position (respecting m_fZoom, m_fOrbit, m_fElevation, m_fFov) on
+        # the real VTK camera, then re-render without resetting.
+        self._update_camera()
+        self._plotter.render(resetcam=False)
+        # Phase 3: hand off to the VTK interactive event loop.
+        if getattr(self._plotter, "interactor", None) is not None:
+            self._plotter.interactor.Start()
+        else:
+            self._plotter.show(interactive=True, resetcam=False)
 
     def close(self) -> None:
         if self._closed:
