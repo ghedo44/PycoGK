@@ -2,7 +2,7 @@
 
 Python package for working with PicoGK from Python.
 
-This is an unofficial community library.
+This is an **unofficial community** library.
 
 - Official PicoGK project (C++ / C#): https://github.com/leap71/PicoGK
 - This Python package repository: https://github.com/ghedo44/PycoGK
