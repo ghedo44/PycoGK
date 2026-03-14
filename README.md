@@ -74,7 +74,6 @@ def task() -> None:
       with Mesh.from_voxels(vox) as msh:
         viewer.Add(msh, nGroupID=1)
         viewer.SetViewAngles(30.0, 20.0)
-        viewer.SetZoom(2.0)
         viewer.RequestUpdate()
         print("triangles:", msh.nTriangleCount())
 
