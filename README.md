@@ -63,17 +63,24 @@ python your_script.py
 ## Quick Start
 
 ```python
-from picogk import Lattice, Voxels, Mesh, go
+from picogk import Lattice, Voxels, Mesh, VedoViewer, go
+
+viewer = VedoViewer(title="pycogk Quickstart")
 
 def task() -> None:
   with Lattice() as lat:
     lat.AddSphere((0.0, 0.0, 0.0), 10.0)
     with Voxels.from_lattice(lat) as vox:
       with Mesh.from_voxels(vox) as msh:
+        viewer.Add(msh, nGroupID=1)
+        viewer.SetViewAngles(30.0, 20.0)
+        viewer.RequestUpdate()
         print("triangles:", msh.nTriangleCount())
 
-go(0.5, task, end_on_task_completion=True)
+go(0.5, task, end_on_task_completion=False, viewer=viewer)
 ```
+
+Close the viewer window to end the program.
 
 ## Documentation
 

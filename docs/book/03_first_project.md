@@ -2,12 +2,15 @@
 
 ## Goal
 
-Create a simple shape, process it in voxels, convert to mesh, and inspect basic stats.
+Create a simple shape, process it in voxels, convert to mesh, inspect stats, and display the result in the viewer.
 
 ## Complete Script
 
 ```python
-from picogk import Lattice, Voxels, Mesh, go
+from picogk import Lattice, Voxels, Mesh, VedoViewer, go
+
+
+viewer = VedoViewer(title="First Project")
 
 
 def task() -> None:
@@ -25,12 +28,17 @@ def task() -> None:
             print("BBox max:", bmax)
 
             with Mesh.from_voxels(vox) as msh:
+                viewer.Add(msh, nGroupID=1)
+                viewer.SetViewAngles(30.0, 20.0)
+                viewer.RequestUpdate()
                 print("Vertices:", msh.nVertexCount())
                 print("Triangles:", msh.nTriangleCount())
 
 
-go(0.5, task, end_on_task_completion=True)
+go(0.5, task, end_on_task_completion=False, viewer=viewer)
 ```
+
+Close the viewer window to end the program.
 
 ## Why `go(...)` Matters
 
