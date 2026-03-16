@@ -7,7 +7,10 @@ import pytest
 from picogk import Library, Mesh, VedoViewer, go
 from shapekernel import BaseBox, Cp, CylUtility, LinearColorScale2D, LocalFrame, Measure, MeshPainter, MeshUtility, Sh
 
-from tests._helpers import runtime_available
+try:
+    from tests._helpers import runtime_available
+except ModuleNotFoundError:
+    from _helpers import runtime_available
 
 
 pytestmark = pytest.mark.skipif(not runtime_available(), reason="PicoGK runtime not available")

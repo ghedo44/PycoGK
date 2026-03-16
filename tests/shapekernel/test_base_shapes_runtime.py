@@ -25,7 +25,10 @@ from shapekernel import (
     TangentialControlSpline,
 )
 
-from tests._helpers import runtime_available
+try:
+    from tests._helpers import runtime_available
+except ModuleNotFoundError:
+    from _helpers import runtime_available
 
 
 class _TestImage:
