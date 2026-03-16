@@ -9,8 +9,8 @@ from picogk import BBox3, Mesh, Voxels
 
 from .._types import Vec3, Vector3Like, as_np3, as_vec3
 from ..frames import Frames
+from ..frames.local_frames import LocalFrame
 from ..modulations import LineModulation, SurfaceModulation
-from ..utils.utils import LocalFrame
 
 class BaseShape(ABC):
     fnVertexTransformation = Callable[[Vec3], Vec3]

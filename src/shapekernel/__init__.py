@@ -13,14 +13,13 @@ from .base_shapes import (
     LatticeManifold,
     LatticePipe,
 )
-from .frames import Frames
+from .frames import Frames, LocalFrame
 from .modulations import Distribution, GenericContour, LineModulation, SurfaceModulation
 from .splines import (
     ControlPointSpline,
     ControlPointSurface,
     CylindricalControlSpline,
-    ISpline,
-    SplineOperations,
+    # ISpline,
     TangentialControlSpline,
 )
 from .utils import (
@@ -34,11 +33,12 @@ from .utils import (
     ImplicitSuperEllipsoid,
     LineDecimation,
     ListOperations,
-    LocalFrame,
     Uf,
     VecOperations,
+    SplineOperations,
 )
-from .functions import CylUtility, Measure, MeshUtility, Sh
+from .functions import Sh
+from .utils import CylUtility, Measure, MeshUtility
 from .visualizations import (
     Cp,
     ColorScale3D,
@@ -53,7 +53,7 @@ from .visualizations import (
 )
 
 __all__ = [
-    "ISpline",
+    # "ISpline",
     "LocalFrame",
     "VecOperations",
     "Frames",

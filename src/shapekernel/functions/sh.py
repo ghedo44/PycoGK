@@ -11,7 +11,8 @@ from picogk import BBox3, Lattice, Library, Mesh, PolyLine, VedoViewer, Voxels
 from picogk._types import ColorFloat
 
 from .._types import ColorLike, Vec3, Vector3Like, as_np3, as_vec3
-from ..utils.utils import GridOperations, LocalFrame, VecOperations
+from ..frames.local_frames import LocalFrame
+from ..utils.utils import GridOperations, VecOperations
 
 class Sh:
     nNumberOfGroups = 0
@@ -21,7 +22,7 @@ class Sh:
         viewer = oViewer if oViewer is not None else Library.oViewer()
         if viewer is None:
             raise RuntimeError("No active viewer. Pass viewer=... to picogk.go(...) or call the preview helper with oViewer=...")
-        return viewer
+        return viewer # pyright: ignore[reportReturnType]
 
     @staticmethod
     def _color_rgba(clrColor: ColorLike, alpha: float | None = None) -> tuple[float, float, float, float]:
@@ -418,7 +419,7 @@ class Sh:
     @staticmethod
     def PreviewFrames(aFrames: object, fSize: float, *, oViewer: VedoViewer | None = None) -> list[int]:
         from ..frames import Frames
-        from ..splines import SplineOperations
+        from ..utils import SplineOperations
 
         if not isinstance(aFrames, Frames):
             raise TypeError("PreviewFrames expects a Frames instance")

@@ -2,20 +2,22 @@ from __future__ import annotations
 
 import ctypes
 import threading
-
+from typing import TYPE_CHECKING
 from _common.types import Vector3Like
 
 from .._config import STRING_LENGTH
 from .._native import native
 from .._types import Vec3, as_vec3, vec3_tuple
-from .._viewer_protocol import IViewer
+# from .._viewer_protocol import IViewer as VedoViewer
+if TYPE_CHECKING:
+    from .._viewer import VedoViewer
 
 class Library:
     _lock = threading.Lock()
     _running = False
     _app_exit = False
     _continue_task = True
-    _viewer: IViewer | None = None
+    _viewer: VedoViewer | None = None
     voxel_size_mm: float = 0.5
 
     @staticmethod
@@ -103,11 +105,11 @@ class Library:
         print(message)
 
     @classmethod
-    def SetViewer(cls, viewer: IViewer | None) -> None:
+    def SetViewer(cls, viewer: VedoViewer | None) -> None:
         cls._viewer = viewer
 
     @classmethod
-    def oViewer(cls) -> IViewer | None:
+    def oViewer(cls) -> VedoViewer | None:
         return cls._viewer
 
     @classmethod

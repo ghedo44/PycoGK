@@ -7,8 +7,10 @@ from enum import Enum
 import numpy as np
 
 from .._types import Vec3, Vector3Like, as_np3, as_vec3, clamp01, normalized
-from ..splines import ISpline, SplineOperations
-from ..utils import LocalFrame, VecOperations
+from ..splines import ISpline
+from ..utils import SplineOperations
+from ..utils import VecOperations
+from .local_frames import LocalFrame
 
 
 class Frames(ISpline):

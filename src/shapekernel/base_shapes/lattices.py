@@ -3,12 +3,12 @@ from __future__ import annotations
 import math
 import numpy as np
 
-from picogk import BBox3, Lattice, Mesh, Voxels
+from picogk import Lattice, Voxels
 
 from .._types import Vec3, Vector3Like, as_np3, as_vec3
 from ..frames import Frames
+from ..frames.local_frames import LocalFrame
 from ..modulations import LineModulation
-from ..utils.utils import LocalFrame
 from .basics import BaseShape
 
 class LatticePipe(BaseShape):

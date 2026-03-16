@@ -8,8 +8,8 @@ from picogk import Image
 
 from .._types import Vec3, as_np3, as_vec3
 from ..frames import Frames
+from ..frames.local_frames import LocalFrame
 from ..modulations import LineModulation, SurfaceModulation
-from ..utils.utils import LocalFrame
 from .basics import BaseBox, BaseShape
 
 class BaseLogoBox(BaseBox):

@@ -1,5 +1,4 @@
 from .visualizations import (
-    Cp,
     ColorScale3D,
     CustomColorScale2D,
     IColorScale,
@@ -10,6 +9,7 @@ from .visualizations import (
     RotationAnimator,
     SmoothColorScale2D,
 )
+from .color_palette import Cp
 
 __all__ = [
     "Cp",

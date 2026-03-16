@@ -7,8 +7,9 @@ from picogk import Mesh, Voxels
 
 from .._types import Vec3, as_np3, as_vec3
 from ..frames import Frames
+from ..frames.local_frames import LocalFrame
 from ..modulations import GenericContour, LineModulation, SurfaceModulation
-from ..utils import LocalFrame, VecOperations
+from ..utils import VecOperations
 from .basics import BaseCylinder, BaseShape
 
 class BaseSphere(BaseShape):
