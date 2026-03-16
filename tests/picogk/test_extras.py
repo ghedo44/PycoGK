@@ -6,7 +6,10 @@ import pytest
 
 from picogk import Cli, CsvTable, EStlUnit, ImageColor, ImageGrayScale, Lattice, Mesh, MeshIo, MeshMath, PolySlice, PolySliceStack, TempFolder, TgaIo, Vector3Ext, Voxels, go
 
-from tests._helpers import runtime_available
+try:
+    from tests._helpers import runtime_available
+except ModuleNotFoundError:
+    from _helpers import runtime_available
 
 
 def test_csv_table_roundtrip(tmp_path: Path) -> None:
@@ -23,11 +26,6 @@ def test_csv_table_roundtrip(tmp_path: Path) -> None:
     loaded.SetColumnIds(["id", "name", "value"])
     loaded.SetKeyColumn(0)
 
-
-    try:
-        from tests._helpers import runtime_available
-    except ModuleNotFoundError:
-        from _helpers import runtime_available
     assert loaded.nMaxColumnCount() == 3
     ok, value = loaded.bGetAt("r2", "value")
     assert ok
