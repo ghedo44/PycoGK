@@ -6,6 +6,16 @@ This book is written for new users who want to go from first install to producti
 
 pycogk is an unofficial Python package for the PicoGK runtime.
 
+## Where shapekernel Fits
+
+This repository also includes `shapekernel`, a higher-level modeling layer that depends on `picogk`.
+
+Use this `picogk` book when you need runtime-level behavior and low-level API control.
+
+Use the `shapekernel` book when you need high-level shape composition patterns.
+
+1. shapekernel book: [../shapekernel/BOOK.md](../shapekernel/BOOK.md)
+
 1. Official PicoGK project: https://github.com/leap71/PicoGK
 2. pycogk project: https://github.com/ghedo44/PycoGK
 

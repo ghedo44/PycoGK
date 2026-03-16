@@ -7,7 +7,7 @@ name = "pycogk"
 version = "0.1.1"
 description = "Python ctypes bindings for PicoGK runtime with vedo viewer"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = "Apache-2.0"
 authors = [{ name = "pycogk contributors" }]
 keywords = ["geometry", "voxels", "mesh", "openvdb", "cad", "engineering"]
@@ -16,7 +16,6 @@ classifiers = [
   "Intended Audience :: Developers",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Topic :: Scientific/Engineering",
   "Topic :: Software Development :: Libraries",

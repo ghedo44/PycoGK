@@ -8,6 +8,29 @@ It is designed to make computational geometry scripting practical in Python whil
 
 This is not the official PicoGK package. It is a community-maintained Python package that references the official runtime and APIs.
 
+## Runtime Layer vs Modeling Layer
+
+`picogk` in this repository is the runtime-facing layer.
+
+It is responsible for:
+
+1. Native runtime loading and compatibility behavior.
+2. Handle ownership and lifecycle.
+3. Runtime object APIs such as `Mesh`, `Voxels`, `Lattice`, and fields.
+4. Viewer orchestration and low-level export/import flows.
+
+The same repository also ships `shapekernel`, which is a high-level modeling composition layer built on top of `picogk`.
+
+That means:
+
+1. `shapekernel` depends on `picogk`.
+2. `picogk` does not depend on `shapekernel`.
+3. Both can be used together, but they solve different concerns.
+
+For deep `shapekernel` documentation, see:
+
+1. [../../shapekernel/BOOK.md](../../shapekernel/BOOK.md)
+
 ## Official vs Unofficial
 
 1. Official runtime and core engine are part of the official PicoGK project.

@@ -1,22 +1,29 @@
-from ._api import (
+from ._viewer import (
     AnimGroupMatrixRotate,
     AnimViewRotate,
-    FieldMetadata,
+    IKeyHandler,
+    IViewerAction,
     KeyAction,
     KeyHandler,
+    RotateToNextRoundAngleAction,
+    VedoViewer,
+    go,
+)
+
+from ._viewer_protocol import IViewer
+
+from ._core import (
+    Config,
+    BBox3,
+    FieldMetadata,
     Lattice,
     Library,
     Mesh,
     OpenVdbFile,
     PolyLine,
-    RotateToNextRoundAngleAction,
     ScalarField,
-    VedoViewer,
     VectorField,
     Voxels,
-    go,
-)
-from ._extras import (
     BBox2,
     ActiveVoxelCounterScalar,
     Animation,
@@ -52,7 +59,6 @@ from ._extras import (
     VectorFieldMerge,
     SurfaceNormalFieldExtractor,
 )
-from ._types import BBox3
 from ._errors import PicoGKDisposedError, PicoGKError, PicoGKInvalidHandleError, PicoGKLoadError
 
 __all__ = [
@@ -61,9 +67,12 @@ __all__ = [
     "PicoGKLoadError",
     "PicoGKDisposedError",
     "PicoGKInvalidHandleError",
+    "Config",
     "Library",
     "KeyAction",
     "KeyHandler",
+    "IKeyHandler",
+    "IViewerAction",
     "RotateToNextRoundAngleAction",
     "AnimGroupMatrixRotate",
     "AnimViewRotate",
@@ -107,6 +116,7 @@ __all__ = [
     "FieldMetadata",
     "OpenVdbFile",
     "PolyLine",
+    "IViewer",
     "VedoViewer",
     "go",
     "ImageRgb24",

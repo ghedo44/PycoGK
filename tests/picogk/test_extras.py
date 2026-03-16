@@ -4,16 +4,9 @@ from pathlib import Path
 
 import pytest
 
-from picogk import Cli, CsvTable, EStlUnit, ImageColor, ImageGrayScale, Mesh, MeshIo, MeshMath, PolySlice, PolySliceStack, TempFolder, TgaIo, Vector3Ext, Voxels, Lattice, go
-from picogk._errors import PicoGKLoadError
+from picogk import Cli, CsvTable, EStlUnit, ImageColor, ImageGrayScale, Lattice, Mesh, MeshIo, MeshMath, PolySlice, PolySliceStack, TempFolder, TgaIo, Vector3Ext, Voxels, go
 
-
-def _runtime_available() -> bool:
-    try:
-        go(0.5, lambda: None, end_on_task_completion=True)
-        return True
-    except PicoGKLoadError:
-        return False
+from tests._helpers import runtime_available
 
 
 def test_csv_table_roundtrip(tmp_path: Path) -> None:
@@ -99,7 +92,7 @@ def test_slice_extraction_and_cli_parse(tmp_path: Path) -> None:
     assert parsed.oSlices.nCount() >= 1
 
 
-@pytest.mark.skipif(not _runtime_available(), reason="PicoGK runtime not available")
+@pytest.mark.skipif(not runtime_available(), reason="PicoGK runtime not available")
 def test_stl_save_load_helpers(tmp_path: Path) -> None:
     stl_path = tmp_path / "tri.stl"
 
@@ -120,7 +113,7 @@ def test_stl_save_load_helpers(tmp_path: Path) -> None:
     assert stl_path.exists()
 
 
-@pytest.mark.skipif(not _runtime_available(), reason="PicoGK runtime not available")
+@pytest.mark.skipif(not runtime_available(), reason="PicoGK runtime not available")
 def test_voxels_vectorize_and_save_cli(tmp_path: Path) -> None:
     cli_path = tmp_path / "vox.cli"
 

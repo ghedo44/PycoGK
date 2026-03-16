@@ -7,18 +7,11 @@ from pathlib import Path
 import pytest
 
 from picogk import Lattice, VedoViewer, Voxels, go
-from picogk._errors import PicoGKLoadError
+
+from tests._helpers import runtime_available
 
 
-def _runtime_available() -> bool:
-    try:
-        go(0.5, lambda: None, end_on_task_completion=True)
-        return True
-    except PicoGKLoadError:
-        return False
-
-
-pytestmark = pytest.mark.skipif(not _runtime_available(), reason="PicoGK runtime not available")
+pytestmark = pytest.mark.skipif(not runtime_available(), reason="PicoGK runtime not available")
 
 
 def test_repeated_go_lifecycle_stability() -> None:

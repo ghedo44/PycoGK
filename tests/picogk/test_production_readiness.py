@@ -47,8 +47,8 @@ def test_public_api_surface_contains_required_symbols() -> None:
 
 
 def test_examples_inventory_is_present() -> None:
-    root = Path(__file__).resolve().parents[1]
-    examples = root / "examples"
+    root = Path(__file__).resolve().parents[2]
+    examples = root / "examples" / "picogk"
     assert examples.is_dir(), "examples directory is missing"
 
     expected_files = {
@@ -77,7 +77,7 @@ def test_runtime_candidate_discovery_is_not_empty() -> None:
 
 
 def test_bundled_runtime_present_for_platform_or_skip() -> None:
-    root = Path(__file__).resolve().parents[1]
+    root = Path(__file__).resolve().parents[2]
     native_root = root / "src" / "picogk" / "native"
     if not native_root.exists():
         pytest.skip("No bundled native runtime directory present")

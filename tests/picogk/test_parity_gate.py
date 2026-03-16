@@ -50,14 +50,14 @@ VALID_STATUSES = {"matched", "adapted", "not-implemented"}
 
 
 def _read_parity_lines() -> list[str]:
-    matrix_path = Path(__file__).resolve().parents[1] / "docs" / "PARITY_MATRIX.md"
+    matrix_path = Path(__file__).resolve().parents[2] / "docs" / "picogk" / "PARITY_MATRIX.md"
     text = matrix_path.read_text(encoding="utf-8")
     return [line.strip() for line in text.splitlines() if line.strip().startswith("| ")]
 
 
 def test_parity_matrix_file_exists() -> None:
-    matrix_path = Path(__file__).resolve().parents[1] / "docs" / "PARITY_MATRIX.md"
-    assert matrix_path.exists(), "docs/PARITY_MATRIX.md is missing"
+    matrix_path = Path(__file__).resolve().parents[2] / "docs" / "picogk" / "PARITY_MATRIX.md"
+    assert matrix_path.exists(), "docs/picogk/PARITY_MATRIX.md is missing"
 
 
 def test_parity_matrix_contains_all_expected_symbols() -> None:

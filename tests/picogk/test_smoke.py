@@ -2,21 +2,15 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from picogk._core.voxels import ESliceMode
 import pytest
 
 from picogk import Lattice, Mesh, OpenVdbFile, PolyLine, ScalarField, VectorField, Voxels, go
-from picogk._errors import PicoGKLoadError
+
+from tests._helpers import runtime_available
 
 
-def _runtime_available() -> bool:
-    try:
-        go(0.5, lambda: None, end_on_task_completion=True)
-        return True
-    except PicoGKLoadError:
-        return False
-
-
-pytestmark = pytest.mark.skipif(not _runtime_available(), reason="PicoGK runtime not available")
+pytestmark = pytest.mark.skipif(not runtime_available(), reason="PicoGK runtime not available")
 
 
 def test_go_runs_task_and_closes() -> None:
@@ -73,7 +67,7 @@ def test_runtime_parity_aliases_and_helpers(tmp_path: Path) -> None:
 
             with Voxels.from_lattice(lat) as vox:
                 assert vox.nSliceCount() > 0
-                assert vox.GetVoxelSlice(0, "black_white").ndim == 2
+                assert vox.GetVoxelSlice(0, ESliceMode.BlackWhite).ndim == 2
                 assert vox.oMetaData().strTypeAt("PicoGK.Class") == "string"
 
                 with Mesh.from_voxels(vox) as mesh:

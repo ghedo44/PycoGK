@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import ctypes
 from dataclasses import dataclass
-from typing import Iterable, Sequence
+from typing import Iterable
+
+from _common.types import Vector3Like, as_tuple3
 
 
 class Vec2(ctypes.Structure):
@@ -30,12 +32,11 @@ class BBox3(ctypes.Structure):
     _fields_ = [("min", Vec3), ("max", Vec3)]
 
 
+_BBox3C = BBox3
+
+
 class Mat4(ctypes.Structure):
     _fields_ = [(f"m{i}", ctypes.c_float) for i in range(16)]
-
-
-Vector3Like = Sequence[float]
-
 
 @dataclass(frozen=True)
 class VoxelDimensions:
@@ -50,9 +51,8 @@ class VoxelDimensions:
 def as_vec3(value: Vector3Like | Vec3) -> Vec3:
     if isinstance(value, Vec3):
         return value
-    if len(value) != 3:
-        raise ValueError("Expected 3 values for Vec3")
-    return Vec3(float(value[0]), float(value[1]), float(value[2]))
+    x, y, z = as_tuple3(value)
+    return Vec3(x, y, z)
 
 
 def as_bbox3(min_xyz: Vector3Like, max_xyz: Vector3Like) -> BBox3:
