@@ -1,3 +1,4 @@
+from __future__ import annotations
 
 from dataclasses import dataclass
 import math
@@ -135,7 +136,7 @@ class BBox3(_BBox3C):
             and self.min.z <= v.z <= self.max.z
         )
 
-    def Include(self, item: object, fZ: float = 0.0) -> None:
+    def Include(self, item: "BBox3 | BBox2 | Vector3Like | Vec3", fZ: float = 0.0) -> None:
         if isinstance(item, BBox3):
             if item.bIsEmpty():
                 return
@@ -150,7 +151,7 @@ class BBox3(_BBox3C):
             self.Include((item.vecMax[0], item.vecMax[1], float(fZ)))
             return
 
-        v = as_vec3(item)  # type: ignore[arg-type]
+        v = as_vec3(item)
         self.min = Vec3(min(self.min.x, v.x), min(self.min.y, v.y), min(self.min.z, v.z))
         self.max = Vec3(max(self.max.x, v.x), max(self.max.y, v.y), max(self.max.z, v.z))
 

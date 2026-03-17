@@ -11,6 +11,8 @@ from .fields import ScalarField, VectorField
 from .library import Library
 from .._core.voxels import Voxels
 
+VdbField = Voxels | ScalarField | VectorField
+
 class OpenVdbFile(HandleOwner):
     class FieldType(IntEnum):
         UNSUPPORTED = -1
@@ -90,7 +92,7 @@ class OpenVdbFile(HandleOwner):
             field_name = f"PicoGK.VectorField.{self.field_count()}"
         return int(Library._lib().VdbFile_nAddVectorField(self.handle, field_name.encode("utf-8"), field.handle))
 
-    def nAdd(self, field: object, field_name: str = "") -> int:
+    def nAdd(self, field: VdbField, field_name: str = "") -> int:
         if isinstance(field, Voxels):
             return self.add_voxels(field, field_name)
         if isinstance(field, ScalarField):
@@ -144,7 +146,7 @@ class OpenVdbFile(HandleOwner):
                 return self.get_vector_field(index)
         raise KeyError(index_or_name)
 
-    def xField(self, index: int) -> object:
+    def xField(self, index: int) -> VdbField:
         field_type = self.field_type(index)
         if field_type == self.FieldType.VOXELS:
             return self.get_voxels(index)

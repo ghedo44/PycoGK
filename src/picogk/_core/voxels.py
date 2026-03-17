@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from .fields import ScalarField
 
 import ctypes
-from typing import Any, Callable, Sequence, cast
+from typing import Any, Callable, Protocol, Sequence, cast
 
 import numpy as np
 
@@ -22,6 +22,29 @@ from .lattice import Lattice
 from .library import Library
 from .mesh import Mesh
 from .metadata import FieldMetadata
+
+
+class SupportsSignedDistance(Protocol):
+    def fSignedDistance(self, vecPt: tuple[float, float, float]) -> float: ...
+
+
+SignedDistanceInput = Callable[[tuple[float, float, float]], float] | SupportsSignedDistance
+
+
+def _coerce_signed_distance_fn(fn_or_implicit: SignedDistanceInput) -> Callable[[tuple[float, float, float]], float]:
+    if callable(fn_or_implicit):
+        return cast(Callable[[tuple[float, float, float]], float], fn_or_implicit)
+
+    signed_distance = getattr(fn_or_implicit, "fSignedDistance", None)
+    if callable(signed_distance):
+        method = cast(Callable[[tuple[float, float, float]], float], signed_distance)
+
+        def _wrapped(vec: tuple[float, float, float]) -> float:
+            return float(method(vec))
+
+        return _wrapped
+
+    raise TypeError("Expected a callable signed-distance function or an object exposing fSignedDistance(vecPt)")
 
 class ESliceMode(IntEnum):
     SignedDistance = 0
@@ -275,12 +298,13 @@ class Voxels(HandleOwner):
 
     RenderImplicit = render_implicit
 
-    def intersect_implicit(self, fn: Callable[[tuple[float, float, float]], float]) -> "Voxels":
+    def intersect_implicit(self, fn: SignedDistanceInput) -> "Voxels":
         self._ensure_open()
+        sd_fn = _coerce_signed_distance_fn(fn)
 
         def _wrapped(vec_ptr: Any) -> float:
             v = vec_ptr.contents
-            return float(fn((float(v.x), float(v.y), float(v.z))))
+            return float(sd_fn((float(v.x), float(v.y), float(v.z))))
 
         cb = CallbackImplicitDistance(_wrapped)
         self._implicit_callback_ref = cb
@@ -289,7 +313,7 @@ class Voxels(HandleOwner):
 
     IntersectImplicit = intersect_implicit
 
-    def voxIntersectImplicit(self, fn: Callable[[tuple[float, float, float]], float]) -> "Voxels":
+    def voxIntersectImplicit(self, fn: SignedDistanceInput) -> "Voxels":
         return self.duplicate().intersect_implicit(fn)
 
     def project_z_slice(self, start_mm: float, end_mm: float) -> "Voxels":

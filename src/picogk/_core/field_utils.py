@@ -7,6 +7,7 @@ import numpy as np
 from _common.types import ColorLike, Vector3Like
 from .polyline import PolyLine
 from .image_io import TgaIo
+from .._viewer_protocol import IViewer
 from .._common import to_rgba
 from picogk._core.voxels import Voxels
 from .image import ImageColor
@@ -163,7 +164,7 @@ class VectorFieldMerge:
 
 class AddVectorFieldToViewer:
     @staticmethod
-    def AddToViewer(oViewer: object, oField: VectorField, clr: ColorLike, nStep: int = 10, fArrow: float = 1.0, nGroup: int = 0) -> None:
+    def AddToViewer(oViewer: IViewer, oField: VectorField, clr: ColorLike, nStep: int = 10, fArrow: float = 1.0, nGroup: int = 0) -> None:
         if nStep <= 0:
             raise ValueError("nStep must be > 0")
         color = to_rgba(clr)

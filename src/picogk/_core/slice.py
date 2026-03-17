@@ -6,6 +6,7 @@ import numpy as np
 
 from _common.types import ColorLike, Vector2Like
 from .._common import to_rgba
+from .._viewer_protocol import IViewer
 from .._core.image import Image
 from .._core.polyline import PolyLine
 from .bbox import BBox2
@@ -257,7 +258,7 @@ class PolySliceStack:
 
     def AddToViewer(
         self,
-        oViewer: object,
+        oViewer: IViewer,
         clrOutside: ColorLike | None = None,
         clrInside: ColorLike | None = None,
         clrDegenerate: ColorLike | None = None,
