@@ -6,7 +6,7 @@ from typing import Sequence
 import numpy as np
 
 from _common.types import ColorLike, clamp01
-from picogk._extras import _to_rgba
+from .._common import to_rgba
 
 
 class Image:
@@ -64,7 +64,7 @@ class Image:
             elif isinstance(value, (float, int)):
                 data[y, x] = float(value) > 0.5
             else:
-                rgba = _to_rgba(value)
+                rgba = to_rgba(value)
                 data[y, x] = ((rgba[0] + rgba[1] + rgba[2]) / 3.0) > 0.5
             return
         if self.eType == Image.EType.GRAY:
@@ -73,7 +73,7 @@ class Image:
             elif isinstance(value, (float, int)):
                 data[y, x] = float(value)
             else:
-                rgba = _to_rgba(value)
+                rgba = to_rgba(value)
                 data[y, x] = (rgba[0] + rgba[1] + rgba[2]) / 3.0
             return
         if isinstance(value, bool):
@@ -83,7 +83,7 @@ class Image:
             c = float(value)
             data[y, x, :] = np.array([c, c, c, 1.0], dtype=np.float32)
         else:
-            data[y, x, :] = np.array(_to_rgba(value), dtype=np.float32)
+            data[y, x, :] = np.array(to_rgba(value), dtype=np.float32)
 
     def byGetValue(self, x: int, y: int) -> int:
         return int(round(clamp01(self.fValue(x, y)) * 255.0))
@@ -240,7 +240,7 @@ class ImageBW(Image):
         if isinstance(value, (float, int)):
             self._data[y, x] = float(value) > 0.5
             return
-        rgba = _to_rgba(value)
+        rgba = to_rgba(value)
         self._data[y, x] = ((rgba[0] + rgba[1] + rgba[2]) / 3.0) > 0.5
 
 
@@ -273,7 +273,7 @@ class ImageGrayScale(Image):
         if isinstance(value, (float, int)):
             self._data[y, x] = float(value)
             return
-        rgba = _to_rgba(value)
+        rgba = to_rgba(value)
         self._data[y, x] = (rgba[0] + rgba[1] + rgba[2]) / 3.0
 
     def bContainsActivePixels(self, fThreshold: float = 0.0) -> bool:
@@ -313,7 +313,7 @@ class ImageColor(Image):
             c = float(value)
             self._data[y, x, :] = np.array([c, c, c, 1.0], dtype=np.float32)
             return
-        self._data[y, x, :] = np.array(_to_rgba(value), dtype=np.float32)
+        self._data[y, x, :] = np.array(to_rgba(value), dtype=np.float32)
 
 
 class ImageRgb24(ImageColor):

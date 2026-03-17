@@ -7,7 +7,7 @@ import numpy as np
 from _common.types import ColorLike, Vector3Like
 from .polyline import PolyLine
 from .image_io import TgaIo
-from picogk._extras import _to_rgba
+from .._common import to_rgba
 from picogk._core.voxels import Voxels
 from .image import ImageColor
 from .fields import ScalarField, VectorField
@@ -30,11 +30,11 @@ class SdfVisualizer:
         if nSlice >= dims.z_size:
             return img
         colors = {
-            "bg": _to_rgba(_clrBackground or (0.0, 0.4, 1.0, 1.0)),
-            "surf": _to_rgba(_clrSurface or (1.0, 1.0, 1.0, 1.0)),
-            "in": _to_rgba(_clrInside or (0.8, 0.2, 1.0, 1.0)),
-            "out": _to_rgba(_clrOutside or (0.2, 0.8, 0.2, 1.0)),
-            "def": _to_rgba(_clrDefect or (1.0, 0.33, 0.0, 1.0)),
+            "bg": to_rgba(_clrBackground or (0.0, 0.4, 1.0, 1.0)),
+            "surf": to_rgba(_clrSurface or (1.0, 1.0, 1.0, 1.0)),
+            "in": to_rgba(_clrInside or (0.8, 0.2, 1.0, 1.0)),
+            "out": to_rgba(_clrOutside or (0.2, 0.8, 0.2, 1.0)),
+            "def": to_rgba(_clrDefect or (1.0, 0.33, 0.0, 1.0)),
         }
         sdf = oField.GetVoxelSlice(nSlice)
         for y in range(dims.y_size):
@@ -166,7 +166,7 @@ class AddVectorFieldToViewer:
     def AddToViewer(oViewer: object, oField: VectorField, clr: ColorLike, nStep: int = 10, fArrow: float = 1.0, nGroup: int = 0) -> None:
         if nStep <= 0:
             raise ValueError("nStep must be > 0")
-        color = _to_rgba(clr)
+        color = to_rgba(clr)
         count = 0
 
         def _visit(pos: tuple[float, float, float], vec: tuple[float, float, float]) -> None:

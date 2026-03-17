@@ -1,6 +1,6 @@
 from _common.types import ColorLike, clamp01
 
-def _to_rgba(color: ColorLike) -> tuple[float, float, float, float]:
+def to_rgba(color: ColorLike) -> tuple[float, float, float, float]:
     if len(color) == 4:
         return (clamp01(color[0]), clamp01(color[1]), clamp01(color[2]), clamp01(color[3]))
     if len(color) == 3:

@@ -5,9 +5,9 @@ from typing import Iterable, Sequence
 import numpy as np
 
 from _common.types import ColorLike, Vector2Like
-from picogk._extras import _to_rgba
-from picogk._core.image import Image
-from picogk._core.polyline import PolyLine
+from .._common import to_rgba
+from .._core.image import Image
+from .._core.polyline import PolyLine
 from .bbox import BBox2
 
 
@@ -263,9 +263,9 @@ class PolySliceStack:
         clrDegenerate: ColorLike | None = None,
         nGroup: int = 0,
     ) -> None:
-        degenerate = _to_rgba(clrDegenerate or (2.0 / 3.0, 2.0 / 3.0, 2.0 / 3.0, 2.0 / 3.0))
-        inside = _to_rgba(clrInside or (2.0 / 3.0, 2.0 / 3.0, 2.0 / 3.0, 2.0 / 3.0))
-        outside = _to_rgba(clrOutside or (1.0, 0.0, 0.0, 2.0 / 3.0))
+        degenerate = to_rgba(clrDegenerate or (2.0 / 3.0, 2.0 / 3.0, 2.0 / 3.0, 2.0 / 3.0))
+        inside = to_rgba(clrInside or (2.0 / 3.0, 2.0 / 3.0, 2.0 / 3.0, 2.0 / 3.0))
+        outside = to_rgba(clrOutside or (1.0, 0.0, 0.0, 2.0 / 3.0))
 
         add_fn = getattr(oViewer, "Add", None)
         if not callable(add_fn):

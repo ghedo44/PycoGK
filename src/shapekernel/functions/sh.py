@@ -12,7 +12,7 @@ from picogk._types import ColorFloat
 
 from .._types import ColorLike, Vec3, Vector3Like, as_np3, as_vec3
 from ..frames.local_frames import LocalFrame
-from ..utils.utils import GridOperations, VecOperations
+from ..utils import GridOperations, VecOperations
 
 class Sh:
     nNumberOfGroups = 0

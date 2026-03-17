@@ -10,7 +10,7 @@ from .._types import Vec3, Vector3Like, as_np3, as_vec3
 if TYPE_CHECKING:
     from ..frames.local_frames import LocalFrame
     
-from .utils import VecOperations
+from .vec_operations import VecOperations
 
 
 class Measure:

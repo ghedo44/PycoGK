@@ -10,7 +10,8 @@ from .._types import Vec3, Vector3Like, as_np3, as_vec3
 
 if TYPE_CHECKING:
     from ..frames.local_frames import LocalFrame
-from ..utils.utils import VecOperations
+    
+from .vec_operations import VecOperations
 
 from picogk import Voxels
 
