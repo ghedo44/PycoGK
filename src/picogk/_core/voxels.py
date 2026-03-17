@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from .fields import ScalarField
 
 import ctypes
-from typing import Any, Callable, Protocol, Sequence, cast
+from typing import Any, Sequence, cast
 
 import numpy as np
 
@@ -23,28 +23,32 @@ from .library import Library
 from .mesh import Mesh
 from .metadata import FieldMetadata
 
-
-class SupportsSignedDistance(Protocol):
-    def fSignedDistance(self, vecPt: tuple[float, float, float]) -> float: ...
+from abc import ABC, abstractmethod
 
 
-SignedDistanceInput = Callable[[tuple[float, float, float]], float] | SupportsSignedDistance
+class IImplicit(ABC):
+	@abstractmethod
+	def fSignedDistance(self, vecPt: Vector3Like) -> float:
+		raise NotImplementedError
 
 
-def _coerce_signed_distance_fn(fn_or_implicit: SignedDistanceInput) -> Callable[[tuple[float, float, float]], float]:
-    if callable(fn_or_implicit):
-        return cast(Callable[[tuple[float, float, float]], float], fn_or_implicit)
+class IBoundedImplicit(IImplicit):
+    @property
+    @abstractmethod
+    def oBounds(self) -> tuple[Vector3Like, Vector3Like]:
+        raise NotImplementedError
 
-    signed_distance = getattr(fn_or_implicit, "fSignedDistance", None)
-    if callable(signed_distance):
-        method = cast(Callable[[tuple[float, float, float]], float], signed_distance)
 
-        def _wrapped(vec: tuple[float, float, float]) -> float:
-            return float(method(vec))
+__all__ = ["IImplicit", "IBoundedImplicit", "Voxels"]
 
-        return _wrapped
 
-    raise TypeError("Expected a callable signed-distance function or an object exposing fSignedDistance(vecPt)")
+
+def _create_native_distance_callback(implicit: IImplicit) -> Any:
+    def _wrapped(vec_ptr: Any) -> float:
+        v = vec_ptr.contents
+        return float(implicit.fSignedDistance((float(v.x), float(v.y), float(v.z))))
+
+    return CallbackImplicitDistance(_wrapped)
 
 class ESliceMode(IntEnum):
     SignedDistance = 0
@@ -80,8 +84,24 @@ class Voxels(HandleOwner):
     def from_scalar_field(cls, field: "ScalarField") -> "Voxels":
         vox = cls()
         box_min, box_max = field.bounding_box()
-        vox.render_implicit(box_min, box_max, field.signed_distance)
+        vox.render_implicit(box_min, box_max, field)
         return vox
+
+    @classmethod
+    def from_implicit(
+        cls,
+        implicit: IImplicit,
+        bounds_min: Vector3Like,
+        bounds_max: Vector3Like,
+    ) -> "Voxels":
+        vox = cls()
+        vox.render_implicit(bounds_min, bounds_max, implicit)
+        return vox
+
+    @classmethod
+    def from_bounded_implicit(cls, implicit: IBoundedImplicit) -> "Voxels":
+        bounds_min, bounds_max = implicit.oBounds
+        return cls.from_implicit(implicit, bounds_min, bounds_max)
 
     @classmethod
     def sphere(cls, center: Vector3Like, radius: float) -> "Voxels":
@@ -282,39 +302,32 @@ class Voxels(HandleOwner):
         self,
         bounds_min: Vector3Like,
         bounds_max: Vector3Like,
-        fn: Callable[[tuple[float, float, float]], float],
+        implicit: IImplicit,
     ) -> "Voxels":
         self._ensure_open()
         bbox = as_bbox3(bounds_min, bounds_max)
-
-        def _wrapped(vec_ptr: Any) -> float:
-            v = vec_ptr.contents
-            return float(fn((float(v.x), float(v.y), float(v.z))))
-
-        cb = CallbackImplicitDistance(_wrapped)
+        cb = _create_native_distance_callback(implicit)
         self._implicit_callback_ref = cb
         Library._lib().Voxels_RenderImplicit(self.handle, ctypes.byref(bbox), cb)
         return self
 
     RenderImplicit = render_implicit
 
-    def intersect_implicit(self, fn: SignedDistanceInput) -> "Voxels":
+    def render_bounded_implicit(self, implicit: IBoundedImplicit) -> "Voxels":
+        bounds_min, bounds_max = implicit.oBounds
+        return self.render_implicit(bounds_min, bounds_max, implicit)
+
+    def intersect_implicit(self, implicit: IImplicit) -> "Voxels":
         self._ensure_open()
-        sd_fn = _coerce_signed_distance_fn(fn)
-
-        def _wrapped(vec_ptr: Any) -> float:
-            v = vec_ptr.contents
-            return float(sd_fn((float(v.x), float(v.y), float(v.z))))
-
-        cb = CallbackImplicitDistance(_wrapped)
+        cb = _create_native_distance_callback(implicit)
         self._implicit_callback_ref = cb
         Library._lib().Voxels_IntersectImplicit(self.handle, cb)
         return self
 
     IntersectImplicit = intersect_implicit
 
-    def voxIntersectImplicit(self, fn: SignedDistanceInput) -> "Voxels":
-        return self.duplicate().intersect_implicit(fn)
+    def voxIntersectImplicit(self, implicit: IImplicit) -> "Voxels":
+        return self.duplicate().intersect_implicit(implicit)
 
     def project_z_slice(self, start_mm: float, end_mm: float) -> "Voxels":
         self._ensure_open()

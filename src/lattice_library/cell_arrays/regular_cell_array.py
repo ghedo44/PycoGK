@@ -16,6 +16,7 @@ class RegularCellArray(ICellArray):
 		self.m_dY = float(dY)
 		self.m_dZ = float(dZ)
 		self.m_fNoiseLevel = min(max(abs(float(fNoiseLevel)), 0.0), 0.3)
+		self.m_oRandom = random.Random()
 		self.m_oVoxels = oVoxels
 		_, oBBox = self.m_oVoxels.CalculateProperties()
 		bbox = _coerce_bbox3(oBBox)
@@ -51,19 +52,20 @@ class RegularCellArray(ICellArray):
 		iY = int(fY * 1000.0)
 		iZ = int(fZ * 1000.0)
 		iIndex = iX * iY * iZ
-		oRandom = random.Random(iIndex)
-		vecNoise = self.vecGetNoise(oRandom)
+		self.m_oRandom = random.Random(iIndex)
+		vecNoise = self.vecGetNoise()
 		return as_vec3((fX + vecNoise[0], fY + vecNoise[1], fZ + vecNoise[2]))
 
-	def vecGetNoise(self, oRandom: random.Random) -> Vec3:
+	def vecGetNoise(self) -> Vec3:
 		return (
-			self.fGetRandomLinear(-self.m_fNoiseLevel * self.m_dX, self.m_fNoiseLevel * self.m_dX, oRandom),
-			self.fGetRandomLinear(-self.m_fNoiseLevel * self.m_dY, self.m_fNoiseLevel * self.m_dY, oRandom),
-			self.fGetRandomLinear(-self.m_fNoiseLevel * self.m_dZ, self.m_fNoiseLevel * self.m_dZ, oRandom),
+			self.fGetRandomLinear(-self.m_fNoiseLevel * self.m_dX, self.m_fNoiseLevel * self.m_dX),
+			self.fGetRandomLinear(-self.m_fNoiseLevel * self.m_dY, self.m_fNoiseLevel * self.m_dY),
+			self.fGetRandomLinear(-self.m_fNoiseLevel * self.m_dZ, self.m_fNoiseLevel * self.m_dZ),
 		)
 
-	def fGetRandomLinear(self, fMin: float, fMax: float, oRandom: random.Random) -> float:
-		return float(fMin) + (float(fMax) - float(fMin)) * oRandom.random()
+	def fGetRandomLinear(self, fMin: float, fMax: float, oRandom: random.Random | None = None) -> float:
+		rng = self.m_oRandom if oRandom is None else oRandom
+		return float(fMin) + (float(fMax) - float(fMin)) * rng.random()
 
 	def aGetUnitCells(self) -> list[IUnitCell]:
 		return self.m_aUnitCells

@@ -5,9 +5,9 @@ import numpy as np
 
 from enum import Enum
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable, Protocol, Sequence, cast
+from typing import TYPE_CHECKING, Callable, Sequence, cast
 
-from picogk import BBox3, Lattice, Library, Mesh, PolyLine, VedoViewer, Voxels
+from picogk import BBox3, IImplicit, Lattice, Library, Mesh, PolyLine, VedoViewer, Voxels
 from picogk._types import ColorFloat
 
 from .._types import ColorLike, Vec3, Vector3Like, as_np3, as_vec3
@@ -18,9 +18,6 @@ if TYPE_CHECKING:
     from ..base_shapes import BaseBox, BaseCylinder, BasePipe, BaseRing
     from ..frames import Frames
 
-
-class SupportsSignedDistance(Protocol):
-    def fSignedDistance(self, vecPt: tuple[float, float, float]) -> float: ...
 
 class Sh:
     nNumberOfGroups = 0
@@ -145,25 +142,8 @@ class Sh:
         return vox1.voxBoolIntersect(vox2)
 
     @staticmethod
-    def voxIntersectImplicit(vox: Voxels, sdfObject: Callable[[tuple[float, float, float]], float] | SupportsSignedDistance) -> Voxels:
-        if callable(sdfObject):
-            callable_sdf = cast(Callable[[tuple[float, float, float]], float], sdfObject)
-
-            def fn_direct(p: tuple[float, float, float]) -> float:
-                return float(callable_sdf(p))
-
-            return vox.voxIntersectImplicit(fn_direct)
-
-        signed_distance = getattr(sdfObject, "fSignedDistance", None)
-        if callable(signed_distance):
-            callable_sd = cast(Callable[[tuple[float, float, float]], float], signed_distance)
-
-            def fn_method(p: tuple[float, float, float]) -> float:
-                return float(callable_sd(p))
-
-            return vox.voxIntersectImplicit(fn_method)
-
-        raise TypeError("sdfObject must be callable or expose fSignedDistance(vecPt)")
+    def voxIntersectImplicit(vox: Voxels, sdfObject: IImplicit) -> Voxels:
+        return vox.voxIntersectImplicit(sdfObject)
 
     @staticmethod
     def vecGetClosestSurfacePoint(vox: Voxels, vecPt: Vector3Like) -> tuple[float, float, float]:

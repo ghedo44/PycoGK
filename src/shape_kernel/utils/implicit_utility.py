@@ -3,11 +3,12 @@ from __future__ import annotations
 import math
 
 import numpy as np
+from picogk import IImplicit
 
 from .._types import Vector3Like, as_np3, as_vec3
 
 
-class ImplicitGyroid:
+class ImplicitGyroid(IImplicit):
     def __init__(self, fUnitSize: float, fThicknessRatio: float) -> None:
         self.m_fFrequencyScale = (2.0 * math.pi) / float(fUnitSize)
         self.m_fThicknessRatio = float(fThicknessRatio)
@@ -26,7 +27,7 @@ class ImplicitGyroid:
         return float(abs(dist) - 0.5 * self.m_fThicknessRatio)
 
 
-class ImplicitSphere:
+class ImplicitSphere(IImplicit):
     def __init__(self, vecCentre: Vector3Like, fRadius: float) -> None:
         self.m_vecCentre = as_np3(vecCentre)
         self.m_fRadius = float(fRadius)
@@ -35,7 +36,7 @@ class ImplicitSphere:
         return float(np.linalg.norm(as_np3(vecPt) - self.m_vecCentre) - self.m_fRadius)
 
 
-class ImplicitGenus:
+class ImplicitGenus(IImplicit):
     def __init__(self, fGap: float) -> None:
         self.m_fGap = float(fGap)
 
@@ -49,7 +50,7 @@ class ImplicitGenus:
         )
 
 
-class ImplicitSuperEllipsoid:
+class ImplicitSuperEllipsoid(IImplicit):
     def __init__(
         self,
         vecCentre: Vector3Like,

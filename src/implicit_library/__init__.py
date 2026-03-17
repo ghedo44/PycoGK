@@ -1,5 +1,5 @@
 from .coordinate_trafo import CombinedTrafo, FunctionalScaleTrafo, ICoordinateTrafo, RadialTrafo, ScaleTrafo
-from .i_implicit import IImplicit
+from picogk import IImplicit
 from .implicit_modular import ImplicitModular
 from .random_deformation_field import RandomDeformationField
 from .raw_tpms_patterns import (

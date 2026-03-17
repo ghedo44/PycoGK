@@ -5,7 +5,7 @@ from shape_kernel._types import Vector3Like
 from lattice_library import IBeamThickness
 
 from .coordinate_trafo import ICoordinateTrafo
-from .i_implicit import IImplicit
+from picogk import IImplicit
 from .raw_tpms_patterns import IRawTPMSPattern
 from .splitting_logic import ISplittingLogic
 

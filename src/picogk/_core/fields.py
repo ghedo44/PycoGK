@@ -13,9 +13,9 @@ from .._types import Vec3, VoxelDimensions, as_vec3, vec3_tuple
 
 from .library import Library
 from .metadata import FieldMetadata
-from .._core.voxels import Voxels
+from .._core.voxels import IImplicit, Voxels
 
-class ScalarField(HandleOwner):
+class ScalarField(HandleOwner, IImplicit):
     def __init__(
         self,
         handle: int | ctypes.c_void_p | None = None,
@@ -117,8 +117,8 @@ class ScalarField(HandleOwner):
 
     TraverseActive = traverse_active
 
-    def signed_distance(self, position: Vector3Like) -> float:
-        ok, value = self.get_value(position)
+    def signed_distance(self, vecPt: Vector3Like) -> float:
+        ok, value = self.get_value(vecPt)
         return float(value if ok else 0.0) * Library.voxel_size_mm
 
     fSignedDistance = signed_distance

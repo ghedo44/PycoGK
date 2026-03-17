@@ -1,20 +1,25 @@
 import numpy as np
 
-
 from _common.types import Vector3Like
+
 from .mesh import Mesh
-from picogk._core.voxels import Voxels
+from .voxels import IBoundedImplicit, Voxels
 
 
-class ImplicitTriangle:
+class ImplicitTriangle(IBoundedImplicit):
     def __init__(self, vecA: Vector3Like, vecB: Vector3Like, vecC: Vector3Like, fThickness: float) -> None:
-        self.A = np.array(vecA, dtype=np.float64)
-        self.B = np.array(vecB, dtype=np.float64)
-        self.C = np.array(vecC, dtype=np.float64)
+        self._a = np.array(vecA, dtype=np.float64)
+        self._b = np.array(vecB, dtype=np.float64)
+        self._c = np.array(vecC, dtype=np.float64)
         self._thickness = float(fThickness)
-        mins = np.minimum(np.minimum(self.A, self.B), self.C) - self._thickness
-        maxs = np.maximum(np.maximum(self.A, self.B), self.C) + self._thickness
-        self.oBounds = (tuple(mins.tolist()), tuple(maxs.tolist()))
+
+        bounds_min = np.minimum(np.minimum(self._a, self._b), self._c) - self._thickness
+        bounds_max = np.maximum(np.maximum(self._a, self._b), self._c) + self._thickness
+        self._bounds = (tuple(bounds_min.tolist()), tuple(bounds_max.tolist()))
+
+    @property
+    def oBounds(self) -> tuple[Vector3Like, Vector3Like]:
+        return self._bounds
 
     @staticmethod
     def _closest_point_on_triangle(point: np.ndarray, a: np.ndarray, b: np.ndarray, c: np.ndarray) -> np.ndarray:
@@ -54,15 +59,16 @@ class ImplicitTriangle:
 
     def fSignedDistance(self, vec: Vector3Like) -> float:
         p = np.array(vec, dtype=np.float64)
-        cp = self._closest_point_on_triangle(p, self.A, self.B, self.C)
+        cp = self._closest_point_on_triangle(p, self._a, self._b, self._c)
         return float(np.linalg.norm(p - cp) - self._thickness)
 
 
-class ImplicitMesh:
+class ImplicitMesh(IBoundedImplicit):
     def __init__(self, msh: Mesh, fThickness: float) -> None:
         self._triangles: list[ImplicitTriangle] = []
         bounds_min = np.array((float("inf"), float("inf"), float("inf")), dtype=np.float64)
         bounds_max = np.array((float("-inf"), float("-inf"), float("-inf")), dtype=np.float64)
+
         for i in range(msh.nTriangleCount()):
             a, b, c = msh.GetTriangle(i)
             tri = ImplicitTriangle(a, b, c, fThickness)
@@ -71,7 +77,12 @@ class ImplicitMesh:
             tmax = np.array(tri.oBounds[1], dtype=np.float64)
             bounds_min = np.minimum(bounds_min, tmin)
             bounds_max = np.maximum(bounds_max, tmax)
-        self.oBounds = (tuple(bounds_min.tolist()), tuple(bounds_max.tolist()))
+
+        self._bounds = (tuple(bounds_min.tolist()), tuple(bounds_max.tolist()))
+
+    @property
+    def oBounds(self) -> tuple[Vector3Like, Vector3Like]:
+        return self._bounds
 
     def fSignedDistance(self, vec: Vector3Like) -> float:
         return min((tri.fSignedDistance(vec) for tri in self._triangles), default=1e9)
@@ -81,9 +92,6 @@ class TriangleVoxelization:
     @staticmethod
     def voxVoxelizeHollow(mesh: Mesh, fThickness: float) -> Voxels:
         implicit = ImplicitMesh(mesh, fThickness)
-        vox = Voxels()
-        bmin, bmax = implicit.oBounds
-        vox.RenderImplicit(bmin, bmax, implicit.fSignedDistance)
-        return vox
+        return Voxels.from_bounded_implicit(implicit)
 
 

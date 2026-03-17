@@ -5,7 +5,7 @@ import math
 from shape_kernel._types import Vector3Like, as_vec3
 from shape_kernel.utils import VecOperations
 
-from ..i_implicit import IImplicit
+from picogk import IImplicit
 
 
 class ImplicitRadialGyroid(IImplicit):

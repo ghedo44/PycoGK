@@ -4,7 +4,7 @@ import math
 
 import pytest
 from lattice_library import ConstantBeamThickness
-from picogk._core.voxels import _coerce_signed_distance_fn
+from picogk import IImplicit
 
 from implicit_library import (
 	CombinedTrafo,
@@ -88,15 +88,12 @@ def test_tpms_presets_basic_eval() -> None:
 		assert math.isfinite(preset.fSignedDistance((1.2, -0.3, 2.5)))
 
 
-def test_voxels_signed_distance_coercion() -> None:
-	def fn(vec: tuple[float, float, float]) -> float:
-		return vec[0] + vec[1] + vec[2]
-
-	class Obj:
-		def fSignedDistance(self, vec):
-			return vec[0] - vec[1] + vec[2]
-
-	wrapped_fn = _coerce_signed_distance_fn(fn)
-	wrapped_obj = _coerce_signed_distance_fn(Obj())
-	assert wrapped_fn((1.0, 2.0, 3.0)) == pytest.approx(6.0)
-	assert wrapped_obj((1.0, 2.0, 3.0)) == pytest.approx(2.0)
+def test_implicit_objects_implement_interface() -> None:
+	o = ImplicitModular(
+		RawGyroidTPMSPattern(),
+		ConstantBeamThickness(0.5),
+		ScaleTrafo(10.0, 10.0, 10.0),
+		FullWallLogic(),
+	)
+	assert isinstance(o, IImplicit)
+	assert math.isfinite(o.fSignedDistance((1.0, 2.0, 3.0)))

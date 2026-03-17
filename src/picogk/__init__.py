@@ -13,6 +13,8 @@ from ._viewer import (
 from ._viewer_protocol import IViewer
 
 from ._core import (
+    IImplicit,
+    IBoundedImplicit,
     Config,
     BBox3,
     FieldMetadata,
@@ -62,6 +64,8 @@ from ._core import (
 from ._errors import PicoGKDisposedError, PicoGKError, PicoGKInvalidHandleError, PicoGKLoadError
 
 __all__ = [
+    "IImplicit",
+    "IBoundedImplicit",
     "PicoGKError",
     "Easing",
     "PicoGKLoadError",

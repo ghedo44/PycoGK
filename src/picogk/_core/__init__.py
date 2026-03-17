@@ -14,7 +14,7 @@ from .slice import PolyContour, PolySlice, PolySliceStack
 from .triangle_voxelization import TriangleVoxelization, ImplicitMesh, ImplicitTriangle
 from .utils import Utils, TempFolder
 from .vector3_ext import Vector3Ext
-from .voxels import Voxels, ESliceMode
+from .voxels import Voxels, ESliceMode, IBoundedImplicit, IImplicit
 from .library import Library
 from .metadata import FieldMetadata
 from .mesh import Mesh
@@ -24,6 +24,8 @@ from .openvdb import OpenVdbFile
 from .polyline import PolyLine
 
 __all__ = [
+    "IImplicit",
+    "IBoundedImplicit",
     "Library",
     "FieldMetadata",
     "Mesh",
